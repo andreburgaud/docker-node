@@ -4,7 +4,7 @@ Docker image explosing Node as a REPL (Read-Eval-Print-Loop), ideal to play with
 
 The repl is wrapped with `rlwrap` https://linux.die.net/man/1/rlwrap allowing for:
 * Colored prompt
-* Editing code with `vim` invoke with `CTRL`+`^` in the shell
+* Editing code with `vim` invoked with `CTRL`+`^` in the shell
 
 # Usage
 
@@ -19,7 +19,7 @@ Type ".help" for more information.
 
 ```
 $ make build
-$ docker run --rm -it andreburgaud/node
+$ make run
 Welcome to Node.js v13.1.0.
 Type ".help" for more information.
 > console.log(`Node version ${process.version}`);
