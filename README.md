@@ -8,16 +8,26 @@ The repl is wrapped with `rlwrap` https://linux.die.net/man/1/rlwrap allowing fo
 
 # Usage
 
+## Install
+
+The Docker image is created via an automated build and is hosted on DockerHub: https://hub.docker.com/r/andreburgaud/node.
+
+To install it on your system, execute the following command:
+
+```
+$ docker pull andreburgaud/node
+```
+
 ## Display Help
 
 ```
-$ docker --rm -it andreburgaud/node help
+$ docker run --rm -it andreburgaud/node help
 Usage:
   docker run --rm -it andreburgaud/node [<options>] [<arguments]: starts Node
   docker run --rm -it andreburgaud/node [<command>] [<options>] [<arguments]:
   Commands
     shell [options] [arguments] : starts a Node shell with rlwrap
-                                 (with all harmony features enabled)
+                                  (with all harmony features enabled)
     bash                        : starts a Bash shell
     help                        : displays this help
     version                     : displays Node.js version
