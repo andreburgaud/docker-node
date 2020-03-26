@@ -1,17 +1,13 @@
-FROM node:13.1.0-buster-slim
+FROM node:13.10.1-alpine3.10
 
 LABEL maintainer="andre.burgaud@gmail.com"
 
-RUN apt-get update && apt-get upgrade -yqq && \
-    DEBIAN_FRONTEND=noninteractive apt-get install rlwrap vim -yqq && \
-    apt-get clean
+RUN apk add --no-cache bash
 
-COPY vimrc /root/.vimrc
+RUN mkdir /js
 
 COPY entrypoint.sh /usr/local/bin/
 
 RUN chmod +x /usr/local/bin/entrypoint.sh
-
-ENV EDITOR=vim
 
 ENTRYPOINT ["entrypoint.sh"]
