@@ -10,51 +10,53 @@ print_version() {
 
 print_help() {
     echo -e "\e[93mUsage:\e[39m"
-    echo -e "  \e[97mdocker run --rm -it andreburgaud/node [<options>] [<arguments]\e[39m: starts Node"
+    echo -e "  \e[97mdocker run --rm -it andreburgaud/node [<options>] [<arguments]\e[39m: Node REPL"
     echo -e "  \e[97mdocker run --rm -it andreburgaud/node [<command>] [<options>] [<arguments]:\e[39m"
     echo -e "  \e[93mCommands\e[39m"
-    echo -e "    \e[97mshell [options] [arguments]\e[39m : starts a Node shell with rlwrap"
-    echo    "                                 (with all harmony features enabled)"
-    echo -e "    \e[97mbash\e[39m                        : starts a Bash shell"
-    echo -e "    \e[97mhelp\e[39m                        : displays this help"
-    echo -e "    \e[97mversion\e[39m                     : displays Node.js version"
+    echo -e "    \e[97mharmony\e[39m  : starts Node.js with all harmony flags on"
+    echo -e "    \e[97mbash\e[39m     : starts Bash shell"
+    echo -e "    \e[97mhelp\e[39m     : displays this help"
+    echo -e "    \e[97mversion\e[39m  : displays Node.js version"
 }
 
-start_node() {
-    node $*
-}
+start_node_harmony() {
+    shift # pop command 'harmony'
 
-start_bash() {
-    shift # Pop the command 'bash' out
-    echo -e "\e[93mExecute 'entrypoint.sh help' to display the help\e[39m"
-    exec bash
-}
-
-start_shell() {
-    shift # Pop the command 'shell' out
-
-    # Array of harmony options not enabled by default
     OPTIONS=$(node --v8-options \
     | grep -A1 "\-\-harmony" \
     | awk '/^  --harmony/ { l = $1; getline; printf "%s %s\n", l, $4}' \
     | grep false \
-    | cut -d ' ' -f 1 \
-    | tr "\n" " ")
+    | cut -d ' ' -f 1)
 
-    echo -e "\e[93mOptions\e[39m: ${OPTIONS[*]} $*"
+    echo -e "\e[93mAll harmony options turned on, including:\e[39m"
+    echo "${OPTIONS}"
+
+    # Replace EOL with space
+    OPTIONS=$(echo ${OPTIONS} | tr "\n" " ")
+
     echo
-    bash -c "sleep 0.5; NODE_NO_READLINE=1 rlwrap -m -pgreen node --experimental-repl-await ${OPTIONS[*]} $*"
+    node ${OPTIONS} $*
+}
+
+start_node() {
+    node ${OPTIONS} $*
+}
+
+start_bash() {
+    shift # Pop command 'bash'
+    echo -e "\e[93mExecute 'entrypoint.sh help' to display the help\e[39m"
+    exec bash
 }
 
 # Main
 if [ "$1" = 'bash' ]; then
     start_bash $@
-elif [ "$1" = 'shell' ]; then
-    start_shell $@
 elif [ "$1" = 'version' ]; then
     print_version
 elif [ "$1" = 'help' ]; then
     print_help
+elif [ "$1" = 'harmony' ]; then
+    start_node_harmony $@
 else
     start_node $@
 fi
